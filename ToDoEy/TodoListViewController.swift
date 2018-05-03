@@ -10,11 +10,18 @@ import UIKit
 
 class TodoListViewController: UITableViewController {
 
-    let itemArray = ["First Comment", "Second Comment", "Third Comment"]
+    var itemArray = ["First Comment", "Second Comment", "Third Comment"]
+    
+    let defautls = UserDefaults.standard
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
+        if let item = defautls.array(forKey: "ToDoListItem") as? [String]
+        {
+            itemArray = item
+        }
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
@@ -22,6 +29,7 @@ class TodoListViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
         
         cell.textLabel?.text = itemArray[indexPath.row]
+        
         
         return cell
         
@@ -54,6 +62,33 @@ class TodoListViewController: UITableViewController {
         
     }
 
-
+   // MARK - Add Button Item
+    
+    @IBAction func addButtonPressed(_ sender: UIBarButtonItem)
+    {
+        var textField = UITextField()
+        
+        let alert = UIAlertController(title: "Add Item", message: "", preferredStyle: UIAlertControllerStyle.alert)
+        
+        let action  = UIAlertAction(title: "ToDoEy Item", style: UIAlertActionStyle.default)
+        { (aaa) in
+        
+            self.itemArray.append(textField.text!)
+            
+            self.defautls.set(self.itemArray, forKey: "ToDoListItem")
+            
+            self.tableView.reloadData()
+        }
+        
+        alert.addTextField { (aaa) in
+            aaa.placeholder = "Add here"
+            textField = aaa
+        }
+        
+        alert.addAction(action)
+        
+        present(alert, animated: true, completion: nil)
+    }
+    
 }
 
